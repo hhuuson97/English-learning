@@ -1,0 +1,84 @@
+stages:
+  - test
+  - build
+  - deploy
+  - promote
+
+variables:
+  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+
+cache:
+  paths:
+    - .cache/pip
+    - venv/
+
+test-unit:
+  image: $CI_REGISTRY/python:3.7
+  stage: test
+  before_script:
+    - python -V  # Print out python version for debugging
+    - pip install virtualenv
+    - virtualenv venv
+    - source venv/bin/activate
+    - pip install -r ./requirements.txt
+  script:
+    - pytest -s -v
+  only:
+    - master
+    - /^release/.*$/
+    - merge_requests
+
+docker-build:
+  # Official docker image.
+  image: $CI_REGISTRY/docker:20.10.1
+  variables:
+    DOCKER_DRIVER: overlay2
+    DOCKER_TLS_CERTDIR: ""
+  stage: build
+#  services:
+#    - $CI_REGISTRY/docker:20.10.1-dind
+  before_script:
+    - docker login -u$CI_REGISTRY_USER -p$CI_REGISTRY_PASSWORD $CI_REGISTRY
+  script:
+    - docker build --pull -t "$CI_REGISTRY/$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG" .
+    - docker push "$CI_REGISTRY/$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG"
+  only:
+    - master
+    - /^release/.*$/
+
+deploy-dev:
+  image: $CI_REGISTRY/docker:20.10.1
+  variables:
+    DOCKER_DRIVER: overlay2
+    DOCKER_TLS_CERTDIR: ""
+  stage: deploy
+  services:
+    - $CI_REGISTRY/docker:20.10.1-dind
+  before_script:
+    - docker login -u$CI_REGISTRY_USER -p$CI_REGISTRY_PASSWORD $CI_REGISTRY
+  script:
+    - echo $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
+    - echo "Deploying dev on CapRover..."
+    - docker run $CI_REGISTRY/caprover/cli-caprover:v2.1.1 caprover deploy --caproverUrl $CAPROVER_URL --caproverPassword $CAPROVER_PASSWORD --caproverApp $CAPROVER_APP_DEV --imageName "$CI_REGISTRY/$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG"
+  only:
+    - master
+    - /^release/.*$/
+
+promote-prod:
+  image: $CI_REGISTRY/docker:20.10.1
+  variables:
+    DOCKER_DRIVER: overlay2
+    DOCKER_TLS_CERTDIR: ""
+  stage: promote
+  services:
+    - $CI_REGISTRY/docker:20.10.1-dind
+  before_script:
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+  script:
+    - echo $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
+    - echo "Deploying prod on CapRover..."
+    - docker run $CI_REGISTRY/caprover/cli-caprover:v2.1.1 caprover deploy --caproverUrl $CAPROVER_URL --caproverPassword $CAPROVER_PASSWORD --caproverApp $CAPROVER_APP_PROD --imageName "$CI_REGISTRY/$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG"
+  only:
+    - master
+    - /^release/.*$/
+  when: manual

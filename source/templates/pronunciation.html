@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>English Learning Tool</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link href="/static/fontawesome/css/fontawesome.css" rel="stylesheet" type="text/css">
+    <link href="/static/fontawesome/css/solid.css" rel="stylesheet" type="text/css">
+    <link href="/static/fontawesome/css/sharp-solid.css" rel="stylesheet" type="text/css">
+    <link href="/static/fontawesome/css/sharp-regular.css" rel="stylesheet" type="text/css">
+    <link href="/static/fontawesome/css/brands.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+    <style>
+        .wrongWord {
+            font-weight: bold;
+            color: orangered;
+        }
+        .rightWord {
+            font-weight: bold;
+            color: limegreen;
+        }
+        .defaultWord {
+            font-weight: bold;
+            color: deepskyblue;
+        }
+    </style>
+
+    <div class="d-flex justify-content-center" id="question" style="margin-bottom: 20px;margin-top: 50px">
+    </div>
+
+    <div class="d-flex justify-content-center align-items-center" style="margin: 10px">
+        <p>
+            <button id="recordButton" class="btn btn-primary rounded-circle" style="margin: 5px">
+                <i id="recordButtonIcon" class="fas fa-microphone"></i>
+            </button>
+
+            <button id="changeWord" class="btn btn-primary rounded-circle" style="margin: 5px">
+                <i id="changeWordIcon" class="fa-solid fa-rotate"></i>
+            </button>
+        </p>
+    </div>
+</body>
+<script>
+    const MIN_DECIBELS = -70;
+    const MAX_SILENT_MILLISECOND = 2000;
+    var currentWord = '';
+
+    navigator
+        .mediaDevices
+        .getUserMedia({audio: true})
+        .then(stream => { handlerFunction(stream) });
+
+    var isRecording = false;
+
+    function lockAction() {
+        recordButton.disabled = true;
+        changeWord.disabled = true;
+    }
+
+    function releaseAction() {
+        recordButton.disabled = false;
+        changeWord.disabled = false;
+    }
+
+    function getVoice(text) {
+        const params = new URLSearchParams();
+        params.append('text', text);
+
+        fetch(`/api/v1/voice?${params.toString()}`)
+          .then(response => response.blob())
+          .then(blob => {
+            const audioUrl = URL.createObjectURL(blob);
+            const audio = new Audio(audioUrl);
+            var divElement = document.getElementById('question');
+            divElement.innerHTML = `<p class="defaultWord">${text}</p>`
+            currentWord = text;
+            audio.play().finally(() => {
+                releaseAction();
+            });
+          })
+          .catch(error => {
+            console.error('Error:', error);
+            releaseAction();
+          });
+    }
+
+    function changeInputValue() {
+        changeWordIcon.classList.add('fa-spin-pulse');
+        lockAction();
+        $.ajax({
+            type: 'GET',
+            url: '/api/v1/library',
+        }).done(function(data) {
+            console.log(data);
+            changeWordIcon.classList.remove('fa-spin-pulse');
+            getVoice(data.data);
+        }).fail(function(jqXHR, textStatus, errorThrown) {
+            // Xử lý lỗi
+            console.error('Error:', errorThrown);
+            changeWordIcon.classList.remove('fa-spin-pulse');
+            releaseAction();
+        });
+    }
+
+    changeInputValue();
+
+    var analyser;
+    var bufferLength;
+    var domainData;
+    function handlerFunction(stream) {
+        rec = new MediaRecorder(stream);
+        rec.ondataavailable = e => {
+            audioChunks.push(e.data);
+            if (rec.state == "inactive") {
+                let blob = new Blob(audioChunks, {type: 'audio/mpeg-3'});
+                sendData(blob);
+            }
+        }
+        const audioContext = new AudioContext();
+        const audioStreamSource = audioContext.createMediaStreamSource(stream);
+        analyser = audioContext.createAnalyser();
+        analyser.minDecibels = MIN_DECIBELS;
+        audioStreamSource.connect(analyser);
+
+        bufferLength = analyser.frequencyBinCount;
+        domainData = new Uint8Array(bufferLength);
+
+        let soundDetected = null;
+        const detectSound = () => {
+          analyser.getByteFrequencyData(domainData);
+
+          for (let i = 0; i < bufferLength; i++) {
+            if (domainData[i] > 0) {
+                soundDetected = Date.now();
+            }
+          }
+          console.log(soundDetected);
+          if ((soundDetected !== null) && (Date.now() - soundDetected > MAX_SILENT_MILLISECOND)) {
+              stopRecording();
+          }
+
+          window.requestAnimationFrame(detectSound);
+        };
+
+        window.requestAnimationFrame(detectSound);
+    }
+
+    function sendData(data) {
+        var form = new FormData();
+        form.append('file', data, 'data.mp3');
+        form.append('title', 'data.mp3');
+        var word = document.getElementById("word");
+        form.append('input', currentWord)
+        //Chrome inspector shows that the post data includes a file and a title.
+        $.ajax({
+            type: 'POST',
+            url: '/api/v1/voice',
+            data: form,
+            cache: false,
+            processData: false,
+            contentType: false,
+        }).done(function(data) {
+            console.log(data);
+            var divElement = document.getElementById('question');
+            divElement.innerHTML = data.data.result;
+        }).fail(function(jqXHR, textStatus, errorThrown) {
+            // Xử lý lỗi
+            console.error('error:', errorThrown);
+        });
+    }
+
+    function startRecording() {
+        console.log('Recording are started..');
+        recordButton.classList.remove('btn-primary');
+        recordButton.classList.add('btn-danger');
+        recordButtonIcon.classList.add('fa-beat');
+        audioChunks = [];
+        isRecording = true;
+        soundDetected = null;
+        rec.start();
+    }
+
+    function stopRecording() {
+        console.log("Recording are stopped.");
+        recordButton.classList.remove('btn-danger');
+        recordButton.classList.add('btn-primary');
+        recordButtonIcon.classList.remove('fa-beat');
+        isRecording = false;
+        rec.stop();
+    }
+
+    recordButton.onclick = e => {
+        if (isRecording) {
+            stopRecording();
+        } else {
+            startRecording();
+        }
+    }
+
+    changeWord.onclick = e => {
+        changeInputValue();
+    };
+</script>
+</html>
