@@ -1,0 +1,140 @@
+.text_overflow_hide {
+    display: block;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 200px;
+    overflow: hidden;
+}
+
+.max-width-200 {
+    max-width: 200px;
+}
+
+.max-height-400 {
+    max-height: 400px;
+    overflow: auto;
+}
+
+.content-wrapper {
+    padding: 10px;
+}
+
+.content-wrapper .card {
+    background: #fff;
+    padding-bottom: 20px;
+}
+
+.content-wrapper .nav.nav-tabs {
+    background: #ecf0f5;
+}
+
+.content-wrapper .detail-action {
+    text-align: center;
+}
+
+.content-wrapper .detail-action .btn {
+    margin-right: 10px;
+}
+
+.content-wrapper .input-group {
+    padding-top: 20px;
+    margin-top: 0px;
+    width: 100%;
+    margin-bottom: 0px;
+    padding-bottom: 10px;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+.content-wrapper table.filters {
+    margin: 0px !important;
+    padding: 10px;
+    display: block;
+}
+
+.content-wrapper table.filters tr {
+    display: inline-block;
+    margin: 5px;
+}
+
+.content-wrapper table.filters tr td .select2-container {
+    display: none;
+}
+
+.content-wrapper .table-bordered.model-list {
+    padding-left: 5px;
+}
+
+.content-wrapper .table-bordered.searchable {
+    padding-left: 5px;
+    width: 75%;
+    margin-left: 12%;
+}
+
+.filters .filter-val {
+    width: 170px;
+}
+
+.btn.remove-filter {
+    min-width: 120px;
+    text-align: left;
+    background: transparent;
+    display: none;
+}
+
+.content-wrapper #filter_form .pull-right {
+    margin-top: 10px;
+    margin-right: 10px;
+}
+
+.content-wrapper .pagination {
+    padding-left: 10px;
+}
+
+.card-body > .admin-form.form-horizontal {
+    background: #fff;
+    padding-top: 20px;
+    padding-bottom: 10px;
+}
+
+.card-body > .admin-form.form-horizontal .form-group {
+    width: 70%;
+    margin-left: 12%;
+}
+
+.inline-form-field > .form-group {
+    width: 95% !important;
+    margin-left: 2% !important;
+}
+
+.list-buttons-column a {
+    padding-right: 5px;
+}
+
+.bg-white {
+    background: #fff;
+}
+
+.group-questions {
+    margin-bottom: 15px;
+    margin-left: 50px;
+}
+
+.group-questions .header {
+    font-weight: bold;
+}
+
+
+.group-questions .left_title {
+    float: left;
+    width: 15%;
+    line-height: 30px;
+    border-bottom: 1px solid #ccc;
+}
+
+.group-questions .right_title {
+    float: left;
+    width: 35%;
+    line-height: 30px;
+    border-bottom: 1px solid #ccc;
+}

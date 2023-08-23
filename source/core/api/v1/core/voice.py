@@ -6,7 +6,7 @@ from werkzeug.datastructures import FileStorage
 
 from source.core import api
 from source.core.api.v1 import web_v1_api
-from source.utils import download, languages, algorithm
+from source.utils import download, languages, algorithm, user_exp
 
 __author__ = 'son.hh'
 _logger = logging.getLogger(__name__)
@@ -24,6 +24,8 @@ class VoiceApi(api.v1.BaseResource, api.v1.BaseApi):
 
     @web_v1_api.expect(api.v1.request.voice.VOICE_FILE_UPLOADER)
     def post(self):
+        # Mock user_id
+        user_id = '1'
         # check if the post request has the file part
         if 'file' not in request.files and 'url' not in request.form:
             return self.return_general(400, "No file")
@@ -42,7 +44,10 @@ class VoiceApi(api.v1.BaseResource, api.v1.BaseApi):
         input2 = languages.speech_to_text(file)
 
         # Highlight the wrong words
-        un_matches = algorithm.longest_common_words(languages.word_split(input), languages.word_split(input2))
+        matches, un_matches = algorithm.longest_common_words(languages.word_split(input), languages.word_split(input2))
+        user_exp.add_more_exp(user_id=user_id, words=matches, is_success=True)
+        user_exp.add_more_exp(user_id=user_id, words=[w[2] for w in un_matches], is_success=False)
+
         result = input
         for s, e, w in un_matches[::-1]:
             result = f"{result[:s]}<span class='wrongWord'>{w}</span>{result[e:]}"

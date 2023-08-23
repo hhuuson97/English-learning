@@ -21,7 +21,7 @@ def replace_un_word(text):
     return re.sub(r"[^a-zA-Z0-9\s]+", ".", text, 0, re.MULTILINE)
 
 def text_to_speech(text: str):
-    tts = gTTS(replace_un_word(text))
+    tts = gTTS(replace_un_word(text), lang="en", tld="com")
     return tts
 
 def word_split(text: str) -> List[List[Union[int, str]]]:

@@ -23,12 +23,19 @@
         }
         .defaultWord {
             font-weight: bold;
-            color: deepskyblue;
+            color: black;
+        }
+        .ipa {
+            color: black;
         }
     </style>
 
-    <div class="d-flex justify-content-center" id="question" style="margin-bottom: 20px;margin-top: 50px">
+    <div class="d-flex justify-content-center" id="question" style="margin-bottom: 5px;margin-top: 50px">
     </div>
+
+    <div class="d-flex justify-content-center" id="ipa" style="margin-bottom: 20px;margin-top: 5px">
+    </div>
+
 
     <div class="d-flex justify-content-center align-items-center" style="margin: 10px">
         <p>
@@ -64,9 +71,9 @@
         changeWord.disabled = false;
     }
 
-    function getVoice(text) {
+    function getVoice(word) {
         const params = new URLSearchParams();
-        params.append('text', text);
+        params.append('text', word.word);
 
         fetch(`/api/v1/voice?${params.toString()}`)
           .then(response => response.blob())
@@ -74,8 +81,10 @@
             const audioUrl = URL.createObjectURL(blob);
             const audio = new Audio(audioUrl);
             var divElement = document.getElementById('question');
-            divElement.innerHTML = `<p class="defaultWord">${text}</p>`
-            currentWord = text;
+            divElement.innerHTML = `<p class="defaultWord">${word.word}</p>`
+            var ipa = document.getElementById('ipa');
+            ipa.innerHTML = `<p class="ipa">${word.ipa}</p>`
+            currentWord = word.word;
             audio.play().finally(() => {
                 releaseAction();
             });

@@ -8,7 +8,7 @@ _logger = logging.getLogger(__name__)
 
 
 # Find the longest common words in order and return the uncommon words in arr1
-def longest_common_words(arr1: List[List[Union[int, str]]], arr2: List[List[Union[int, str]]]) -> List[List[Union[int, str]]]:
+def longest_common_words(arr1, arr2):
     m = len(arr1)
     n = len(arr2)
 
@@ -29,4 +29,4 @@ def longest_common_words(arr1: List[List[Union[int, str]]], arr2: List[List[Unio
             i += 1
         else:
             no_matches.append(w)
-    return no_matches
+    return dp[m][n], no_matches
