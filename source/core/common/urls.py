@@ -2,7 +2,7 @@ import flask
 import flask_login
 from . import common_api
 from source.utils.users import auth
-from source.helpers import languages_helpers, contants
+from source.helpers import languages_helpers, contants, string_helpers
 
 
 def init_common_api_url():

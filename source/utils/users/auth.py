@@ -10,6 +10,10 @@ from source.helpers.contants import COOKIE_KEY, MESSAGES
 from source.models.user import User, UserRole
 
 __author__ = 'VuTNT'
+
+from source.utils.user_utils import gen_jwt_user_token
+from source.utils.users.user_info import get_user_info
+
 _logger = logging.getLogger(__name__)
 
 
@@ -48,7 +52,7 @@ def user_login(username=None, password=None, fcm_token=None):
     if check:
         actions = [] if check.password else ["update_password_social"]
         return {
-                   # "access_token": gen_jwt_user_token(check, action=actions),
+                   "access_token": gen_jwt_user_token(check, action=actions),
                    "user": check.to_dict,
                    "action": actions
                }, None
@@ -88,13 +92,7 @@ def validate_jwt_token(token):
 
     if current_time > data.get('exp'):
         return None
-    # if data.get('iss'):
-    #     user_info = get_user_info(data.get('iss'))
-    #     return user_info
-    if data.get('sid'):
-        return {
-            "sid": data.get('sid'),
-            "action": data.get('action'),
-            "need_update_info": True
-        }
+    if data.get('iss'):
+        user_info = get_user_info(data.get('iss'))
+        return user_info
     return None

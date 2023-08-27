@@ -6,9 +6,13 @@ from werkzeug.datastructures import FileStorage
 
 from source.core import api
 from source.core.api.v1 import web_v1_api
+from source.helpers import contants
 from source.utils import download, languages, algorithm, user_exp
 
 __author__ = 'son.hh'
+
+from source.utils.gcloud import cache_voice_file, get_voice_file
+
 _logger = logging.getLogger(__name__)
 
 class VoiceApi(api.v1.BaseResource, api.v1.BaseApi):
@@ -16,10 +20,10 @@ class VoiceApi(api.v1.BaseResource, api.v1.BaseApi):
     @web_v1_api.expect(api.v1.request.voice.GET_VOICE)
     def get(self):
         text = request.args.get('text')
-        file = languages.text_to_speech(text)
-        fp = BytesIO()
-        file.write_to_fp(fp)
-        fp.seek(0)
+        fp = get_voice_file(text)
+        if not fp:
+            fp = languages.text_to_speech(text)
+            cache_voice_file(fp, text)
         return send_file(fp, download_name="data.mp3")
 
     @web_v1_api.expect(api.v1.request.voice.VOICE_FILE_UPLOADER)

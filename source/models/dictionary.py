@@ -14,3 +14,4 @@ class Dictionary(Base):
     word = sa.Column(sa.String(80), index=True)
     ipa = sa.Column(sa.String(80))
     mean = sa.Column(sa.String(255))
+    has_voice = sa.Column(sa.Boolean)

@@ -84,6 +84,7 @@ def init_db(app, db_key=None, create=None):
     from source.models.user import User
     from source.models.http_log import HttpLog
     from source.models.dictionary import Dictionary
+    from source.models.user_exp import UserExp
     # db_session.configure(
     #     bind=engines[db_key] if db_key in engines else engines[DB_KEY_DEFAULT]
     # )
@@ -95,6 +96,7 @@ def init_db(app, db_key=None, create=None):
             User: engines[DB_KEY_DEFAULT],
             HttpLog: engines[DB_KEY_DEFAULT],
             Dictionary: engines[DB_KEY_DEFAULT],
+            UserExp: engines[DB_KEY_DEFAULT],
         }
     )
 

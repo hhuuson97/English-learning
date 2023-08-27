@@ -15,6 +15,8 @@ class SETTINGS:
     GOOGLE_TOKEN_INFO = "https://oauth2.googleapis.com/tokeninfo"
     APPLE_GRAPH_URI = "https://appleid.apple.com/auth/token"
 
+    BUCKET_ID = 'language_voices'
+
 
 class MESSAGES:
     HTTP_404 = 'HTTP_404'

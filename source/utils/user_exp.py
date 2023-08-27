@@ -10,12 +10,12 @@ _logger = logging.getLogger(__name__)
 
 def add_more_exp(user_id, words, is_success):
     for word in words:
-        dict_id = Dictionary.query.filter(Dictionary.word == word).first()
-        if not dict_id:
+        dict_info = Dictionary.query.filter(Dictionary.word == word).first()
+        if not dict_info:
             continue
         user_exp: UserExp = UserExp.query.filter(
             UserExp.user_id == user_id,
-            UserExp.dict_id == dict_id,
+            UserExp.dict_id == dict_info.id,
         ).first()
         if user_exp:
             if is_success:
@@ -25,7 +25,7 @@ def add_more_exp(user_id, words, is_success):
         else:
             user_exp = UserExp(
                 user_id=user_id,
-                dict_id=dict_id,
+                dict_id=dict_info.id,
                 exactly_times=1 if is_success else 0,
             )
             db_session.add(user_exp)
