@@ -1,26 +1,27 @@
 import logging
 import random
 from typing import List
-
 from flask import request
 from sqlalchemy import func
+from flask_login import current_user
 
 from source.core import api
+from source.core.api.v1 import web_v1_api
 from source.models.dictionary import Dictionary
 from source.models.user_exp import UserExp
 from source.utils import languages
+from source.utils.languages import load_word_info
 
 __author__ = 'son.hh'
-
-from source.utils.languages import load_word_info
 
 _logger = logging.getLogger(__name__)
 
 class LibraryApi(api.v1.BaseResource, api.v1.BaseApi):
 
+    @api.v1.login_required
+    @web_v1_api.expect(api.v1.request.HEADER_AUTH, api.v1.request.library.GET_SAMPLE)
     def get(self):
-        # Mock user_id
-        user_id = '1'
+        user_id = current_user.user_id
         excepted_word = request.args.get('excepted_word')
         MAX_RANDOM_LIST = 20
         # old mistake
@@ -59,6 +60,8 @@ class LibraryApi(api.v1.BaseResource, api.v1.BaseApi):
             'mean': chosen_word.mean,
         })
 
+    @api.v1.login_required
+    @web_v1_api.expect(api.v1.request.HEADER_AUTH, api.v1.request.UPSERT_WORD)
     def post(self):
         word = request.json.get('word')
         languages.get_word_info(word)

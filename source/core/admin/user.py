@@ -1,18 +1,12 @@
 import logging
 
-__author__ = 'son.hh'
-_logger = logging.getLogger(__name__)
-
-# coding=utf-8
-import logging
-
 from source.models.user import User
 from source.models.database import db_session
 from source.utils.user_utils import hash_password, update_cache_user
 from wtforms import StringField
 from . import hq, ModelView
 
-__author__ = 'VuTNT'
+__author__ = 'son.hh'
 _logger = logging.getLogger(__name__)
 
 

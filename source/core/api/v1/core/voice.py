@@ -1,12 +1,10 @@
 import logging
-from io import BytesIO
-
 from flask import request, send_file
 from werkzeug.datastructures import FileStorage
+from flask_login import current_user
 
 from source.core import api
 from source.core.api.v1 import web_v1_api
-from source.helpers import contants
 from source.utils import download, languages, algorithm, user_exp
 
 __author__ = 'son.hh'
@@ -17,7 +15,8 @@ _logger = logging.getLogger(__name__)
 
 class VoiceApi(api.v1.BaseResource, api.v1.BaseApi):
 
-    @web_v1_api.expect(api.v1.request.voice.GET_VOICE)
+    @api.v1.login_required
+    @web_v1_api.expect(api.v1.request.HEADER_AUTH, api.v1.request.voice.GET_VOICE)
     def get(self):
         text = request.args.get('text')
         fp = get_voice_file(text)
@@ -26,10 +25,10 @@ class VoiceApi(api.v1.BaseResource, api.v1.BaseApi):
             cache_voice_file(fp, text)
         return send_file(fp, download_name="data.mp3")
 
-    @web_v1_api.expect(api.v1.request.voice.VOICE_FILE_UPLOADER)
+    @api.v1.login_required
+    @web_v1_api.expect(api.v1.request.HEADER_AUTH, api.v1.request.voice.VOICE_FILE_UPLOADER)
     def post(self):
-        # Mock user_id
-        user_id = '1'
+        user_id = current_user.user_id
         # check if the post request has the file part
         if 'file' not in request.files and 'url' not in request.form:
             return self.return_general(400, "No file")

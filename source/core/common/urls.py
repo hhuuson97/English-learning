@@ -19,7 +19,7 @@ def redirect_to_home():
     """ Redirect / to /web
     :return:
     """
-    return flask.redirect('/auth/login')
+    return flask.redirect('/pronunciation')
 
 
 def login():

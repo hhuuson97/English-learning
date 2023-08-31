@@ -13,4 +13,4 @@ VOICE_FILE_UPLOADER.add_argument('file', type=FileStorage, location='files', hel
 VOICE_FILE_UPLOADER.add_argument('input', type=str, location='form', help='Kết quả dùng để kiểm tra')
 
 GET_VOICE = reqparse.RequestParser()
-GET_VOICE.add_argument('text', type=str, required=False, help="Từ cần lấy giọng nói")
+GET_VOICE.add_argument('text', type=str, required=True, help="Từ cần lấy giọng nói")
