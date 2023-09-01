@@ -1,5 +1,7 @@
 import flask
 import flask_login
+from flask_login import login_required
+
 from . import common_api
 from source.utils.users import auth
 from source.helpers import languages_helpers, contants, string_helpers
@@ -57,5 +59,6 @@ def forbidden():
 def auth_message():
     return flask.render_template('api_v1/auth_message.html', message=flask.request.args.get("message")), 403
 
+@login_required
 def pronunciation():
     return flask.render_template('pronunciation.html')

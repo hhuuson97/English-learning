@@ -45,6 +45,7 @@ def download_to_file(bucket_name, source_blob_name):
     storage_client = storage.Client()
     bucket = storage_client.bucket(bucket_name)
     blob = bucket.blob(source_blob_name)
-    with tempfile.NamedTemporaryFile() as tmp:
-        blob.download_to_file(file_obj=tmp)
-        return tmp
+    tmp = tempfile.NamedTemporaryFile()
+    blob.download_to_file(file_obj=tmp)
+    tmp.seek(0)
+    return tmp

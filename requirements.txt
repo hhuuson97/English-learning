@@ -14,7 +14,6 @@ flask_caching
 flask_principal
 marshmallow
 sentry_sdk
-jwt
 redis
 flask_admin
 jinja2
@@ -25,3 +24,4 @@ torch
 googletrans==4.0.0rc1
 google-cloud-storage
 ffmpeg-python
+PyJWT
