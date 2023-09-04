@@ -34,7 +34,15 @@ ERROR_404_HELP = False
 STATIC_FOLDER = os.path.join(ROOT_DIR, 'source/templates', 'static')
 RESTPLUS_VALIDATE = True
 
-SQLALCHEMY_DATABASE_URI = None
+HOST = os.environ.get('HOST')
+INSTANCE_HOST = os.environ.get('INSTANCE_HOST')
+USERNAME = os.environ.get('USERNAME')
+PASSWORD = os.environ.get('PASSWORD')
+DB_NAME = os.environ.get('DB_NAME')
+if HOST:
+    SQLALCHEMY_DATABASE_URI = f"mysql+pymysql://{USERNAME}:{PASSWORD}@{HOST}:3306/{DB_NAME}?charset=utf8mb4"
+else:
+    SQLALCHEMY_DATABASE_URI = f"mysql+pymysql://{USERNAME}:{PASSWORD}@/{DB_NAME}?unix_socket=/cloudsql/{INSTANCE_HOST}"
 SQLALCHEMY_TRACK_MODIFICATIONS = True
 SQLALCHEMY_COMMIT_ON_TEARDOWN = True
 
@@ -43,11 +51,8 @@ CELERY_BROKER_URL = 'redis://localhost:6379',
 CELERY_RESULT_BACKEND = 'redis://localhost:6379'
 
 # Caching
-CACHE_TYPE = 'redis'
-CACHE_REDIS_HOST = '127.0.0.1'
-CACHE_REDIS_PORT = '6379'
-
-CACHE_KEY_PREFIX = "flask_cache_%s_%s_" % ("GAM", ENV_MODE)
+CACHE_TYPE = 'simple'
+CACHE_KEY_PREFIX = "flask_cache_%s_" % ENV_MODE
 # Swagger
 SWAGGER_UI_REQUEST_DURATION = True
 SWAGGER_UI_DEFAULT_MODELS_EXPAND_DEPTH = "-1"
