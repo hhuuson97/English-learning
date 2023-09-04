@@ -5,8 +5,6 @@ gazelle:
 	bazel run //:requirements.update
 	bazel run //:gazelle_python_manifest.update
 	bazel run //:gazelle
-build:
-	docker build -t gcr.io/english-learning-396709/english-learning .
 run-docker:
 	docker run \
 		-e USERNAME='sonhh' \
@@ -22,5 +20,3 @@ run-migrate:
 		-p 5000:5000 \
 		gcr.io/english-learning-396709/english-learning \
 		flask db upgrade heads
-push:
-	docker push gcr.io/english-learning-396709/english-learning
