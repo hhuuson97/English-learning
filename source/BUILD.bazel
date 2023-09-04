@@ -1,0 +1,24 @@
+load("@rules_python//python:defs.bzl", "py_library")
+
+py_library(
+    name = "source",
+    srcs = [
+        "__init__.py",
+        "main_app.py",
+        "signals.py",
+    ],
+    visibility = ["//:__subpackages__"],
+    deps = [
+        "//source/commands",
+        "//source/core",
+        "//source/exts",
+        "//source/helpers",
+        "//source/utils",
+        "@pip//blinker",
+        "@pip//flask",
+        "@pip//flask_babelex",
+        "@pip//flask_cors",
+        "@pip//flask_migrate",
+        "@pip//werkzeug",
+    ],
+)

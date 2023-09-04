@@ -1,0 +1,11 @@
+load("@rules_python//python:defs.bzl", "py_library")
+
+py_library(
+    name = "core",
+    srcs = [
+        "__init__.py",
+        "health.py",
+    ],
+    visibility = ["//:__subpackages__"],
+    deps = ["//source/core/api"],
+)

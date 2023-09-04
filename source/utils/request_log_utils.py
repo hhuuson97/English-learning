@@ -4,6 +4,7 @@ import flask
 from flask_login import current_user
 import copy
 import json as _json
+
 from source.models.database import db_session
 from source.models.http_log import HttpLog
 from source.helpers.http_helpers import get_client_ip

@@ -13631,7 +13631,7 @@ wysihtml5.views.View = Base.extend(
   });
 })(wysihtml5);
 ;/**
- * Converts speech-to-text and inserts this into the editor
+ * Converts EnglishLearning and inserts this into the editor
  * As of now (2011/03/25) this only is supported in Chrome >= 11
  *
  * Note that it sends the recorded audio to the google speech recognition api:

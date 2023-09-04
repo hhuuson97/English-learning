@@ -1,0 +1,37 @@
+load("@rules_python//python:defs.bzl", "py_library")
+
+py_library(
+    name = "utils",
+    srcs = [
+        "__init__.py",
+        "algorithm.py",
+        "cipher.py",
+        "db_helpers.py",
+        "download.py",
+        "gcloud.py",
+        "http_request.py",
+        "languages.py",
+        "request_log_utils.py",
+        "setting_utils.py",
+        "user_exp.py",
+        "user_utils.py",
+    ],
+    visibility = ["//:__subpackages__"],
+    deps = [
+        "//source/helpers",
+        "//source/models",
+        "@pip//ffmpeg_python",
+        "@pip//flask",
+        "@pip//flask_login",
+        "@pip//google_cloud_storage",
+        "@pip//googletrans",
+        "@pip//gtts",
+        "@pip//numpy",
+        "@pip//openai_whisper",
+        "@pip//pyjwt",
+        "@pip//requests",
+        "@pip//sqlalchemy",
+        "@pip//urllib3",
+        "@pip//werkzeug",
+    ],
+)

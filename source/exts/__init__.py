@@ -10,9 +10,10 @@ def init_app(app, **kwargs):
     """
     Extension initialization point.
     """
-    from . import login_manager, cache_manager, jinja2, authz
+    from . import login_manager, jinja2, authz
+    from source.helpers import cache_helpers
 
-    cache_manager.init_app(app, **kwargs)
+    cache_helpers.init_app(app, **kwargs)
     login_manager.init_app(app, **kwargs)
     jinja2.init_app(app, **kwargs)
     authz.init_app(app)

@@ -1,0 +1,20 @@
+load("@rules_python//python:defs.bzl", "py_library")
+
+py_library(
+    name = "api",
+    srcs = [
+        "__init__.py",
+        "errors.py",
+    ],
+    visibility = ["//:__subpackages__"],
+    deps = [
+        "//source/exts",
+        "//source/exts/marshmallow",
+        "//source/helpers",
+        "//source/models",
+        "//source/utils",
+        "@pip//flask",
+        "@pip//flask_principal",
+        "@pip//flask_restx",
+    ],
+)

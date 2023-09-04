@@ -1,0 +1,20 @@
+load("@rules_python//python:defs.bzl", "py_library")
+
+py_library(
+    name = "models",
+    srcs = [
+        "__init__.py",
+        "database.py",
+        "dictionary.py",
+        "env_settings.py",
+        "http_log.py",
+        "leaderboard.py",
+        "user.py",
+        "user_exp.py",
+    ],
+    visibility = ["//:__subpackages__"],
+    deps = [
+        "//source/helpers",
+        "@pip//sqlalchemy",
+    ],
+)

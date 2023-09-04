@@ -1,0 +1,22 @@
+load("@rules_python//python:defs.bzl", "py_library")
+
+py_library(
+    name = "admin",
+    srcs = [
+        "__init__.py",
+        "user.py",
+    ],
+    visibility = ["//:__subpackages__"],
+    deps = [
+        "//source/helpers",
+        "//source/models",
+        "//source/utils",
+        "@pip//flask",
+        "@pip//flask_admin",
+        "@pip//flask_login",
+        "@pip//markupsafe",
+        "@pip//sqlalchemy",
+        "@pip//werkzeug",
+        "@pip//wtforms",
+    ],
+)

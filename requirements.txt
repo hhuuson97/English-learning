@@ -1,10 +1,10 @@
 git+https://github.com/openai/whisper.git
 git+https://github.com/librosa/librosa
-ffmpeg
-Flask
+ffmpeg==1.4
+Flask==2.3.2
 flask_login
-flask_restx
-flask_migrate
+flask_restx==1.1.0
+flask_migrate==4.0.4
 sqlalchemy
 flask_cors
 flask_babelex
@@ -25,3 +25,4 @@ googletrans==4.0.0rc1
 google-cloud-storage
 ffmpeg-python
 PyJWT
+pytest

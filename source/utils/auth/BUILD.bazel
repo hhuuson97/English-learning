@@ -1,0 +1,10 @@
+load("@rules_python//python:defs.bzl", "py_library")
+
+py_library(
+    name = "auth",
+    srcs = [
+        "__init__.py",
+        "auth_login.py",
+    ],
+    visibility = ["//:__subpackages__"],
+)

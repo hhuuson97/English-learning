@@ -1,0 +1,16 @@
+load("@rules_python//python:defs.bzl", "py_library")
+
+py_library(
+    name = "common",
+    srcs = [
+        "__init__.py",
+        "urls.py",
+    ],
+    visibility = ["//:__subpackages__"],
+    deps = [
+        "//source/helpers",
+        "//source/utils/users",
+        "@pip//flask",
+        "@pip//flask_login",
+    ],
+)

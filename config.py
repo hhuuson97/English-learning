@@ -22,6 +22,12 @@ DEBUG = False
 TESTING = False
 LOGGING_CONFIG_FILE = os.path.join(ROOT_DIR, 'logging.ini')
 
+SEEDS_DIR = os.path.join(
+    ROOT_DIR,
+    'migrations',
+    'seeds',
+)
+
 FLASK_APP_SECRET_KEY = 'SL5@$yB9WFaP6|7l&cQfLxq_vYT*$fsIAE?Rl:Z6'
 ERROR_404_HELP = False
 

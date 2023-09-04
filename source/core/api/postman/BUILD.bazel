@@ -1,0 +1,14 @@
+load("@rules_python//python:defs.bzl", "py_library")
+
+py_library(
+    name = "postman",
+    srcs = [
+        "__init__.py",
+        "urls.py",
+    ],
+    visibility = ["//:__subpackages__"],
+    deps = [
+        "//source/core/api",
+        "@pip//flask_restx",
+    ],
+)

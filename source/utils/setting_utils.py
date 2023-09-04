@@ -3,7 +3,7 @@ import logging
 from source.models.database import db_session
 from source.models.env_settings import EnvSettings
 from source.helpers import cache_helpers
-from source.exts.cache_manager import cache
+from source.helpers.cache_helpers import cache
 
 __author__ = 'VuTNT'
 _logger = logging.getLogger(__name__)

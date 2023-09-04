@@ -18,13 +18,14 @@ class HttpRequest:
     _MAX_TIMEOUT = 20
 
     _http = urllib3.PoolManager()
+    _save_func = request_log_utils.save_http
 
     def __init__(self):
         pass
 
     @staticmethod
     def save_log(url, method, headers, body, response):
-        request_log_utils.save_http(url=url, type='http', header=headers, body=body, method=method, response=response)
+        HttpRequest._save_func(url=url, type='http', header=headers, body=body, method=method, response=response)
 
     @staticmethod
     def get(url, query_strings=None, headers=None, json_output=True, is_log=True, timeout=None):

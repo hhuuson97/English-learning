@@ -1,0 +1,12 @@
+load("@rules_python//python:defs.bzl", "py_library")
+
+py_library(
+    name = "authz",
+    srcs = ["__init__.py"],
+    visibility = ["//:__subpackages__"],
+    deps = [
+        "//source/models",
+        "@pip//flask_login",
+        "@pip//flask_principal",
+    ],
+)

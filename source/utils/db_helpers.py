@@ -3,7 +3,7 @@ import logging
 
 from sqlalchemy import text
 from source.models.database import get_engine
-from core.helpers.contants import MESSAGES
+from source.helpers.contants import MESSAGES
 
 __author__ = 'VuTNT'
 _logger = logging.getLogger(__name__)

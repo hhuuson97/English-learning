@@ -1,0 +1,23 @@
+load("@rules_python//python:defs.bzl", "py_library")
+
+py_library(
+    name = "core",
+    srcs = [
+        "__init__.py",
+        "demo.py",
+        "library.py",
+        "settings.py",
+        "voice.py",
+    ],
+    visibility = ["//:__subpackages__"],
+    deps = [
+        "//source/core/api",
+        "//source/core/api/v1",
+        "//source/models",
+        "//source/utils",
+        "@pip//flask",
+        "@pip//flask_login",
+        "@pip//sqlalchemy",
+        "@pip//werkzeug",
+    ],
+)

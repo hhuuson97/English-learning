@@ -3,15 +3,15 @@ import logging
 import celery as _celery
 from celery.schedules import crontab
 import kombu.serialization
-from source import helpers
+from source.utils.cipher import json_encode, json_decode
 
 __author__ = 'VuTNT'
 _logger = logging.getLogger(__name__)
 
 kombu.serialization.register(
     name='app-json',
-    encoder=helpers.json_encode,
-    decoder=helpers.json_decode,
+    encoder=json_encode,
+    decoder=json_decode,
     content_type='application/app-json',
     content_encoding='utf-8'
 )

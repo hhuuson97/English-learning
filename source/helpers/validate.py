@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import logging
 import re
-import config
+from flask import current_app
 import datetime
 
 __author__ = 'VuTNT'
@@ -58,7 +58,7 @@ def is_valid_raw_password(password):
 
 def is_valid_file_extension(filename, extension=None):
     if not extension:
-        extension = config.ALLOWED_EXTENSIONS
+        extension = current_app.config.get('ALLOWED_EXTENSIONS')
     return '.' in filename and filename.rsplit('.', 1)[-1].lower() in extension
 
 

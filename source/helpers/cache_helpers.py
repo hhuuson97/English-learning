@@ -1,16 +1,19 @@
 # coding=utf-8
 import logging
-from source.exts.cache_manager import cache
+import flask_caching
 
-__author__ = 'VuTNT'
+__author__ = 'son.hh'
 _logger = logging.getLogger(__name__)
 
-LANGUAGE_OBJ = {}
+cache = flask_caching.Cache()
+
+
+def init_app(app, **kwargs):
+    cache.init_app(app)
 
 
 def build_key(key):
-    return "HUB_%s" % key
-
+    return "CACHE_%s" % key
 
 def set_cache(**kwargs):
     return set(**kwargs)
@@ -42,4 +45,3 @@ def get(key, default=None):
 def delete(key):
     key = build_key(key=key)
     return cache.delete(key=key)
-

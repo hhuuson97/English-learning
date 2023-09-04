@@ -10,7 +10,7 @@ import functools
 import inspect
 import werkzeug.exceptions as _excs
 from sqlalchemy import event
-from source.exts import cache_manager
+from source.helpers import cache_helpers
 
 _DEFAULT_TIMESPAN = 5  # 10 seconds
 
@@ -113,7 +113,7 @@ class ObjLock(object):
         Raise self.exc if there is.
         If not, mark the action occured
         """
-        if cache_manager.cache.get(self._lock_key):
+        if cache_helpers.cache.get(self._lock_key):
             raise TooManyActionError(
                 'Too many actions on %s in last %d seconds' % (
                     self._obj,
@@ -121,14 +121,14 @@ class ObjLock(object):
                 )
             )
 
-        cache_manager.cache.set(
+        cache_helpers.cache.set(
             self._lock_key,
             1,
             timeout=self.timespan,
         )
 
     def release(self):
-        cache_manager.cache.delete(self._lock_key)
+        cache_helpers.cache.delete(self._lock_key)
 
     @classmethod
     def lock(cls, obj_cls=None, timespan=_DEFAULT_TIMESPAN):
@@ -167,4 +167,3 @@ class ObjLock(object):
                     return fn(self, *args, **kwargs)
             return wrapper
         return decorator
-

@@ -1,6 +1,5 @@
 # coding=utf-8
 import logging
-
 import jwt
 from flask import current_app
 from sqlalchemy import or_, and_
@@ -8,11 +7,10 @@ from sqlalchemy import or_, and_
 from source.helpers import string_helpers, languages_helpers, time_helpers, http_helpers
 from source.helpers.contants import COOKIE_KEY, MESSAGES
 from source.models.user import User, UserRole
-
-__author__ = 'VuTNT'
-
 from source.utils.user_utils import gen_jwt_user_token
 from source.utils.users.user_info import get_user_info
+
+__author__ = 'VuTNT'
 
 _logger = logging.getLogger(__name__)
 

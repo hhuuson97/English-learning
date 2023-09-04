@@ -1,8 +1,10 @@
-run:
-	export HOST=127.0.0.1
-	export USERNAME=sonhh
-	export PASSWORD=mtk10197
-	python main.py
+run-local:
+	bazel build english_learning_bin
+	HOST=127.0.0.1;USERNAME=sonhh;PASSWORD=mtk10197 bazel run english_learning_bin
+gazelle:
+	bazel run //:requirements.update
+	bazel run //:gazelle_python_manifest.update
+	bazel run //:gazelle
 build:
 	docker build -t gcr.io/english-learning-396709/english-learning .
 run-docker:

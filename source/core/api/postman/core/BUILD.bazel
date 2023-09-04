@@ -1,0 +1,15 @@
+load("@rules_python//python:defs.bzl", "py_library")
+
+py_library(
+    name = "core",
+    srcs = [
+        "__init__.py",
+        "postman.py",
+        "postman_v1.py",
+    ],
+    visibility = ["//:__subpackages__"],
+    deps = [
+        "//source/core/api",
+        "@pip//six",
+    ],
+)

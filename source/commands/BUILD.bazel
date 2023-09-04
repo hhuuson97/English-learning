@@ -1,0 +1,17 @@
+load("@rules_python//python:defs.bzl", "py_library")
+
+py_library(
+    name = "commands",
+    srcs = [
+        "__init__.py",
+        "init_db.py",
+        "input_data.py",
+    ],
+    visibility = ["//:__subpackages__"],
+    deps = [
+        "//source/models",
+        "@pip//click",
+        "@pip//flask",
+        "@pip//flask_migrate",
+    ],
+)

@@ -10,7 +10,7 @@ import flask_admin.form.fields
 import flask_admin.model.form
 import markupsafe
 import sqlalchemy
-from flask import json
+from flask import json, current_app
 from flask import redirect, request
 from flask import url_for
 from flask_admin.contrib.sqla import ModelView as AMV
@@ -18,12 +18,11 @@ from flask_admin.contrib.sqla.ajax import QueryAjaxModelLoader
 from flask_login import current_user
 from markupsafe import Markup
 from werkzeug.utils import secure_filename
-
 from wtforms import TextAreaField
 from wtforms.widgets import TextArea
 
-import config
-from source.helpers import json_decode
+
+from source.utils.cipher import json_decode
 from source.helpers import string_helpers, time_helpers
 from source.models.user import UserRole
 
@@ -341,7 +340,7 @@ class ModelView(AMV):
     def prefix_name(obj, file_data):
         parts = op.splitext(file_data.filename)
         name = secure_filename('%s-%s%s' % (string_helpers.gen_uuid(), parts[0], parts[1]))
-        return op.join(config.UPLOAD_FOLDER, "admin", datetime.datetime.utcnow().strftime("%Y%m%d"), name)
+        return op.join(current_app.config.get('UPLOAD_FOLDER'), "admin", datetime.datetime.utcnow().strftime("%Y%m%d"), name)
 
     column_formatters = {
         'created_at': date_utc_format,
@@ -372,14 +371,16 @@ class CustomImageUploadInput(flask_admin.form.ImageUploadInput):
 class CustomUploadForm(flask_admin.form.ImageUploadField):
     def __init__(self, label=None, validators=None,
                  base_path=None, relative_path=None,
-                 namegen=ModelView.prefix_name, allowed_extensions=config.ALLOWED_EXTENSIONS_IMAGE,
+                 namegen=ModelView.prefix_name, allowed_extensions=None,
                  max_size=None,
                  thumbgen=None, thumbnail_size=(100, 100, False),
                  permission=0o666,
                  url_relative_path=None, endpoint='static',
                  **kwargs):
         if base_path is None:
-            base_path = config.STATIC_FOLDER
+            base_path = current_app.config.get('STATIC_FOLDER')
+        if allowed_extensions is None:
+            allowed_extensions = current_app.config.get('ALLOWED_EXTENSIONS_IMAGE')
 
         super().__init__(label, validators,
                          base_path=base_path,

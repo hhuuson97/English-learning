@@ -1,0 +1,26 @@
+load("@rules_python//python:defs.bzl", "py_library")
+
+py_library(
+    name = "helpers",
+    srcs = [
+        "__init__.py",
+        "cache_helpers.py",
+        "contants.py",
+        "http_helpers.py",
+        "http_helps.py",
+        "languages_helpers.py",
+        "sentry_helpers.py",
+        "string_helpers.py",
+        "time_helpers.py",
+        "validate.py",
+    ],
+    visibility = ["//:__subpackages__"],
+    deps = [
+        "@pip//flask",
+        "@pip//flask_caching",
+        "@pip//python_dateutil",
+        "@pip//pytz",
+        "@pip//sentry_sdk",
+        "@pip//sqlalchemy",
+    ],
+)

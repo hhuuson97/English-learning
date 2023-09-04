@@ -1,7 +1,7 @@
 import logging
 
 from source.core import api
-from source.helpers.http_request import HttpRequest
+from source.utils.http_request import HttpRequest
 
 __author__ = 'son.hh'
 _logger = logging.getLogger(__name__)

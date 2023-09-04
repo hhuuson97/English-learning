@@ -4,11 +4,11 @@ import logging
 import os
 import functools
 import flask_migrate
-import config
 import click
 from flask.cli import with_appcontext
-from source.models.database import db_session, get_engine, init_db
 from flask import current_app
+
+from source.models.database import db_session, get_engine, init_db
 
 __author__ = 'VuTNT'
 _logger = logging.getLogger(__name__)
@@ -36,13 +36,6 @@ def init_task(fn):
     return wrapper
 
 
-SEEDS_DIR = os.path.join(
-    config.ROOT_DIR,
-    'migrations',
-    'seeds',
-)
-
-
 @init_task
 def _run_sql_file(file):
     if os.path.isfile(file):
@@ -53,12 +46,12 @@ def _run_sql_file(file):
 
 @init_task
 def init_users():
-    _run_sql_file(os.path.join(SEEDS_DIR, 'users.sql'))
+    _run_sql_file(os.path.join(current_app.config.get('SEEDS_DIR'), 'users.sql'))
 
 
 @init_task
 def import_file(file):
-    _run_sql_file(os.path.join(SEEDS_DIR, file))
+    _run_sql_file(os.path.join(current_app.config.get('SEEDS_DIR'), file))
 
 
 @click.command()

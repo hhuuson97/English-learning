@@ -1,0 +1,14 @@
+load("@rules_python//python:defs.bzl", "py_library")
+
+py_library(
+    name = "core",
+    srcs = ["__init__.py"],
+    visibility = ["//:__subpackages__"],
+    deps = [
+        "//source/core/admin",
+        "//source/core/api",
+        "//source/core/common",
+        "//source/helpers",
+        "@pip//flask",
+    ],
+)

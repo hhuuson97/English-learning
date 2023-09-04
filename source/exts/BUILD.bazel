@@ -1,0 +1,26 @@
+load("@rules_python//python:defs.bzl", "py_library")
+
+py_library(
+    name = "exts",
+    srcs = [
+        "__init__.py",
+        "action_lock.py",
+        "celery.py",
+        "jinja2.py",
+        "login_manager.py",
+    ],
+    visibility = ["//:__subpackages__"],
+    deps = [
+        "//source/core/api/v1/exception",
+        "//source/helpers",
+        "//source/models",
+        "//source/utils",
+        "//source/utils/users",
+        "@pip//celery",
+        "@pip//flask",
+        "@pip//flask_login",
+        "@pip//kombu",
+        "@pip//sqlalchemy",
+        "@pip//werkzeug",
+    ],
+)

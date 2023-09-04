@@ -1,0 +1,19 @@
+load("@rules_python//python:defs.bzl", "py_library")
+
+py_library(
+    name = "users",
+    srcs = [
+        "__init__.py",
+        "auth.py",
+        "user_info.py",
+    ],
+    visibility = ["//:__subpackages__"],
+    deps = [
+        "//source/helpers",
+        "//source/models",
+        "//source/utils",
+        "@pip//flask",
+        "@pip//pyjwt",
+        "@pip//sqlalchemy",
+    ],
+)

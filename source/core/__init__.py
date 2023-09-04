@@ -1,7 +1,10 @@
 # coding=utf-8
 import logging
 from flask import render_template
+
 from source.helpers import languages_helpers, contants, http_helpers
+from source.core import api, admin, common
+from source.core.common.urls import init_common_api_url
 
 __author__ = 'VuTNT'
 _logger = logging.getLogger(__name__)
@@ -11,8 +14,6 @@ def init_app(app, **kwargs):
     """
     Extension initialization point.
     """
-    from . import api, admin, common
-    from .common.urls import init_common_api_url
     # Treat - Fix me
     init_common_api_url()
 

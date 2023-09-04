@@ -112,12 +112,13 @@ def load_config_current_db(app):
         })
 
 
-def load_app_config(app, config):
-    instance_config_file = 'config_%s.py' % config.ENV_MODE.lower()
-    app.config.from_object(config)
-    app.config.from_pyfile('config.py', silent=True)
-    app.config.from_pyfile(instance_config_file, silent=True)
-    app.static_folder = config.STATIC_FOLDER
+def load_app_config(app):
+    # instance_config_file = 'config_%s.py' % config.ENV_MODE.lower()
+    # import config
+    # app.config.from_object(config)
+    app.config.from_pyfile('../config.py', silent=True)
+    app.config.from_pyfile('../instance/config.py', silent=True)
+    app.static_folder = app.config.get('STATIC_FOLDER')
 
     if app.config.get('ALL_CONFIGS'):
         additional_config = json.loads(app.config.get('ALL_CONFIGS'))
@@ -137,30 +138,16 @@ def create_app():
     """ Create Flask application based on env_name
     :rtype: flask.Flask
     """
-
-    try:
-        from instance.config import ENV_MODE
-    except:
-        from config import ENV_MODE
-
-    import config
-    # if ENV_MODE and ENV_MODE not in ['local', 'dev']:
-    #     sentry_sdk.init(
-    #         dsn="https://1b307f217c1d477187379bbe4612ebca@o378661.ingest.sentry.io/5202413",
-    #         environment=(ENV_MODE or "local").upper(),
-    #         integrations=[FlaskIntegration()]
-    #     )
     app = flask.Flask(
         __name__,
         instance_relative_config=True,
-        instance_path=os.path.join(config.ROOT_DIR, 'instance'),
     )
     app.url_map.strict_slashes = False
 
-    load_app_config(app, config)
+    load_app_config(app)
     config_logger(app)
-
-    app.secret_key = config.FLASK_APP_SECRET_KEY
+    app.instance_path = os.path.join(app.config.get('ROOT_DIR'), 'instance')
+    app.secret_key = app.config.get('FLASK_APP_SECRET_KEY')
 
     # app.after_request(after_request)
     app.teardown_appcontext(teardown_appcontext)

@@ -1,0 +1,18 @@
+load("@rules_python//python:defs.bzl", "py_library")
+
+py_library(
+    name = "migrations",
+    srcs = [
+        "__init__.py",
+        "env.py",
+        "versions/409e91ec78c2_init_database.py",
+        "versions/969400da6ec0_update_database.py",
+        "versions/c6e04698825f_add_has_voice.py",
+    ],
+    visibility = ["//:__subpackages__"],
+    deps = [
+        "@pip//alembic",
+        "@pip//flask",
+        "@pip//sqlalchemy",
+    ],
+)

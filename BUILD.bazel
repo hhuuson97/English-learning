@@ -1,11 +1,22 @@
+# Load various rules so that we can have bazel download
+# various rulesets and dependencies.
+# The `load` statement imports the symbol for the rule, in the defined
 # ruleset. When the symbol is loaded you can use the rule.
 load("@bazel_gazelle//:def.bzl", "gazelle")
 load("@pip//:requirements.bzl", "all_whl_requirements")
-load("@rules_python//python:defs.bzl", "py_binary", "py_library", "py_test")
+load("@pip//:requirements.bzl", "all_requirements")
+load("@rules_python//python:defs.bzl", "py_binary", "py_library")
 load("@rules_python//python:pip.bzl", "compile_pip_requirements")
 load("@rules_python_gazelle_plugin//:def.bzl", "GAZELLE_PYTHON_RUNTIME_DEPS")
 load("@rules_python_gazelle_plugin//manifest:defs.bzl", "gazelle_python_manifest")
 load("@rules_python_gazelle_plugin//modules_mapping:def.bzl", "modules_mapping")
+load("@com_github_bazelbuild_buildtools//buildifier:def.bzl", "buildifier")
+load("@io_bazel_rules_docker//python3:image.bzl", "py3_image")
+load("@io_bazel_rules_docker//container:container.bzl", "container_image", "container_push")
+
+buildifier(
+    name = "buildifier",
+)
 
 compile_pip_requirements(
     name = "requirements",
@@ -58,15 +69,92 @@ gazelle(
     gazelle = "@rules_python_gazelle_plugin//python:gazelle_binary",
 )
 
-# This rule is auto-generated and managed by Gazelle,
-# because it found the __init__.py file in this folder.
-# See: https://bazel.build/reference/be/python#py_library
+filegroup(
+    name = "migration_files",
+    srcs = glob([
+        "migrations/**",
+    ]),
+)
+
+filegroup(
+    name = "instance",
+    srcs = glob([
+        "instance/*.ini",
+    ]),
+)
+
+filegroup(
+    name = "template",
+    srcs = glob([
+        "source/templates/403.html",
+    ]),
+)
+
 py_library(
-    name = "build_file_generation",
-    srcs = ["__init__.py"],
+    name = "english_learning",
+    srcs = [
+        "config.py",
+        "instance/config.py",
+        "main.py",
+    ],
     visibility = ["//:__subpackages__"],
     deps = [
-        "//random_number_generator",
-        "@pip//flask",
+        "//source",
+    ] + all_requirements,
+)
+
+py_binary(
+    name = "english_learning_bin",
+    srcs = [
+        "config.py",
+        "instance/config.py",
+        "main.py",
     ],
+    data = [
+        ":instance",
+        ":migration_files",
+        ":template",
+    ],
+    main = "main.py",
+    visibility = ["//:__subpackages__"],
+    deps = [":english_learning"],
+)
+
+py_library(
+    name = "conftest",
+    testonly = True,
+    srcs = ["conftest.py"],
+    visibility = ["//:__subpackages__"],
+    deps = [
+        "//source",
+        "//source/models",
+        "@pip//pytest",
+    ],
+)
+
+py3_image(
+    name = "base_binary_image",
+    srcs = [
+        "config.py",
+        "instance/config.py",
+        "main.py",
+    ],
+    data = [
+        ":instance",
+        ":migration_files",
+        ":template",
+    ],
+    main = "main.py",
+    visibility = ["//:__subpackages__"],
+    deps = [":english_learning"],
+)
+
+container_push(
+    name = "push",
+    format = "Docker",
+    image = ":base_binary_image",
+    registry = "gcr.io",
+    repository = "english-learning-396709/english-learning",
+    skip_unchanged_digest = True,
+    tag = "{GIT_COMMIT_COUNT}",
 )
