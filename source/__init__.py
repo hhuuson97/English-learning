@@ -10,3 +10,4 @@ app = main_app.create_app()
 celery = _celery.make_celery(app)
 
 main_app.init_app(app)
+
